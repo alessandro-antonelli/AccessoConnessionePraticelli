@@ -29,7 +29,7 @@ function AvviaFinestraPrincipale()
 			}
 		})
 	FinestraPrincipale.setMenuBarVisibility(false);
-	//FinestraPrincipale.setIcon('icone/logo.png');
+	FinestraPrincipale.setIcon(path.join(__dirname, 'icona-app.png'));
 	FinestraPrincipale.loadFile('index.html');
 
 	FinestraPrincipale.webContents.on('did-finish-load', function()

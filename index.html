@@ -14,8 +14,8 @@
 			<div id="sloggato" style="display: none">❓ Non sei loggato. Per usare il programma, inserisci nome utente e password:</div>
 
 			<div id="loggato" style="display: none">
-				✔️ Sei loggato come <span id="usrLab" style="font-weight: bold;">...</span>!
-				<button id="modifica">modifica credenziali</button>
+				✔️ Sei loggato come <span id="usrLab" style="font-weight: bold;">...</span>
+				<button id="modifica">✏️modifica credenziali</button>
 			</div>
 			<fieldset id="credenziali" style="display: none">
 				Utente:
@@ -28,12 +28,19 @@
 				<div id="errori"></div>
 			</fieldset>
 
-			<label id="OnOffLab" style="color: silver; cursor: not-allowed">
+			<label id="OnOffLab" style="display: none; cursor: pointer">
 				<input id="OnOff" type="checkbox" style="zoom: 2; cursor: inherit; vertical-align: middle;" disabled />
-				<div style="margin-left: 40px; margin-top: -30px;">Attiva il rinnovo automatico del login</div>
+				<div style="margin-left: 40px; margin-top: -30px; cursor: inherit;">Attiva il rinnovo automatico del login</div>
 			</label>
 
+			<h4>Registro attività</h4>
 			<div id="log"></div>
+		</div>
+
+		<div id="footer">
+			©2021 <a href="https://alessandro-antonelli.github.io" target="_blank">Alessandro Antonelli</a> |
+			<a href="https://github.com/alessandro-antonelli/AccessoConnessionePraticelli" target="_blank">Codice sorgente su Github</a> |
+			logo: <a href="https://github.com/fabianalexisinostroza" target="_blank">Antü Plasma Suite by Fabián Alexis</a> (CC-BY-SA)
 		</div>
 	</body>
 </html>

@@ -4,7 +4,7 @@ const ipcRenderer = require('electron').ipcRenderer;
 
 window.addEventListener('DOMContentLoaded', () =>
 {
-	document.getElementById('OnOff').addEventListener('change', ToggleAttivazione);
+	document.getElementById('OnOff').addEventListener('change', ToggleAttivazione.bind(null, true));
 	document.getElementById('salva').addEventListener('click', SalvaCredenziali);
 	document.getElementById('modifica').addEventListener('click', ModificaCredenziali);
 
@@ -20,9 +20,12 @@ window.addEventListener('DOMContentLoaded', () =>
 		document.getElementById('loggato').style.display = 'block';
 		document.getElementById('credenziali').style.display = 'none';
 		document.getElementById('OnOff').disabled = false;
-		document.getElementById('OnOffLab').style.cursor = 'pointer';
-		document.getElementById('OnOffLab').style.color = 'black';
-		if(config.has('attivo')) document.getElementById('OnOff').checked = config.get('attivo');
+		document.getElementById('OnOffLab').style.display = 'block';
+		if(config.has('attivo'))
+		{
+			document.getElementById('OnOff').checked = config.get('attivo');
+			ToggleAttivazione(false);
+		}
 	}
 	else
 	{
@@ -30,8 +33,7 @@ window.addEventListener('DOMContentLoaded', () =>
 		document.getElementById('loggato').style.display = 'none';
 		document.getElementById('credenziali').style.display = 'block';
 		document.getElementById('OnOff').disabled = true;
-		document.getElementById('OnOffLab').style.cursor = 'not-allowed';
-		document.getElementById('OnOffLab').style.color = 'silver';
+		document.getElementById('OnOffLab').style.display = 'none';
 		document.getElementById('usr').focus();
 	}
 })
@@ -63,8 +65,7 @@ async function SalvaCredenziali()
 		document.getElementById('loggato').style.display = 'block';
 		document.getElementById('credenziali').style.display = 'none';
 		document.getElementById('OnOff').disabled = false;
-		document.getElementById('OnOffLab').style.cursor = 'pointer';
-		document.getElementById('OnOffLab').style.color = 'black';
+		document.getElementById('OnOffLab').style.display = 'block';
 		if(config.has('attivo')) document.getElementById('OnOff').checked = config.get('attivo');
 	} else
 	{
@@ -76,21 +77,21 @@ async function SalvaCredenziali()
 	}
 }
 
-function ToggleAttivazione()
+function ToggleAttivazione(ComunicaAlMain)
 {
 	const attivo = document.getElementById('OnOff').checked;
-	config.set('attivo', attivo);
+	if(ComunicaAlMain) config.set('attivo', attivo);
 
 	if(attivo)
 	{
 		//comunica al main per attivare il ciclo
-		ipcRenderer.send('attivato');
+		if(ComunicaAlMain) ipcRenderer.send('attivato');
 
 		document.getElementById('OnOffLab').style.fontWeight = 'bold';
 		document.getElementById('OnOffLab').style.color = 'red';
 	} else
 	{
-		ipcRenderer.send('disattivato');
+		if(ComunicaAlMain) ipcRenderer.send('disattivato');
 
 		document.getElementById('OnOffLab').style.fontWeight = 'normal';
 		document.getElementById('OnOffLab').style.color = 'black';
@@ -100,6 +101,6 @@ function ToggleAttivazione()
 function AggiungiLog(testo)
 {
 	const adesso = new Date();
-	const DataOra = '<span style="opacity: 0.7">' + adesso.getDate() + '/' + (adesso.getMonth()+1) + ' ' + adesso.getHours() + (adesso.getMinutes() < 10 ? '0:' : ':') + adesso.getMinutes() + (adesso.getSeconds() < 10 ? '0:' : ':') + adesso.getSeconds() + '</span> ';
+	const DataOra = '<span style="opacity: 0.7; font-size: 80%">' + adesso.getDate() + '/' + (adesso.getMonth()+1) + ' ' + adesso.getHours() + (adesso.getMinutes() < 10 ? ':0' : ':') + adesso.getMinutes() + (adesso.getSeconds() < 10 ? ':0' : ':') + adesso.getSeconds() + '</span> ';
 	document.getElementById('log').innerHTML = DataOra + testo + '<br/>' + document.getElementById('log').innerHTML;
 }

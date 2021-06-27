@@ -5,6 +5,7 @@ const config = new StoreProvider({name: 'config', encryptionKey: '9YiBu5#lHygy' 
 
 var timer;
 var FinestraUI;
+var ConnessioneFunzionavaAllUltimoControllo;
 
 const DominiTestati = ['google.com', 'amazon.com', 'microsoft.com', 'facebook.com', 'en.wikipedia.org', 'repubblica.it', 'corriere.it']
 var DominiEsito = [];
@@ -32,14 +33,20 @@ function IniziaControllo()
 
 async function ConcludiControllo(ConnessioneFunziona)
 {
+	ConnessioneFunzionavaAllUltimoControllo = ConnessioneFunziona;
+	
 	if(ConnessioneFunziona == false)
 	{
 		FinestraUI.webContents.send('log', '⏰Accesso scaduto! Connessione interrotta');
 		var EsitoRinnovo;
 		do {
 			EsitoRinnovo = await RinnovaLogin();
-			if(EsitoRinnovo != 'OK') FinestraUI.webContents.send('log', '❌Il tentativo di accesso automatico è fallito! Riprovo... [passaggio non riuscito: ' + EsitoRinnovo + ']');
-		} while(EsitoRinnovo != 'OK');
+			if(EsitoRinnovo != 'OK')
+			{
+				FinestraUI.webContents.send('log', '❌Il tentativo di accesso automatico è fallito! Riprovo... [passaggio non riuscito: ' + EsitoRinnovo + ']');
+				await sleep(5000);
+			}
+		} while(EsitoRinnovo != 'OK' || ConnessioneFunzionavaAllUltimoControllo == true);
 		FinestraUI.webContents.send('log', '✅Accesso rinnovato! Connessione ripristinata');
 	}
 
@@ -128,4 +135,9 @@ async function RinnovaLogin()
 	await browser.close();
 	config.set('UltimoRinnovo', (new Date()).getTime() );
 	return 'OK';
+}
+
+function sleep(ms)
+{
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
