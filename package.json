@@ -1,0 +1,29 @@
+{
+  "name": "AccessoConnessionePraticelli",
+  "version": "1.0.0",
+  "description": "Rinnova automaticamente il login per la connessione internet nella residenza Praticelli di Pisa",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alessandro-antonelli/AccessoConnessionePraticelli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alessandro-antonelli/AccessoConnessionePraticelli/issues"
+  },
+  "homepage": "https://github.com/alessandro-antonelli/AccessoConnessionePraticelli#readme",
+  "devDependencies": {
+    "electron": "^13.1.4"
+  },
+  "dependencies": {
+    "electron-store": "^8.0.0",
+    "ping": "^0.4.1",
+    "puppeteer": "^10.0.0"
+  }
+}

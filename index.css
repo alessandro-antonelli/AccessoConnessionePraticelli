@@ -1,0 +1,21 @@
+/* Impedisce la selezione del testo e nasconde il cursore relativo, tranne che nelle textbox */
+:not(input):not(textarea):not(.slider):not(label),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before
+{
+	-webkit-user-select: none;
+	user-select: none;
+	cursor: default;
+}
+
+
+body { font-family: sans-serif; padding: 0; margin: 0; }
+#header { font-size: 110%; background-color: skyblue; padding: 2px 8px 8px 8px; }
+#contenuto { font-size: 130%; padding: 8px }
+#credenziali { background-color: orangered; color: white; border: none; }
+#usr, #psw { font-weight: bold; width: 95%; clear: both; }
+input[type=checkbox] { filter:hue-rotate(140deg); }
+button { font-size: 100%; display: block; margin: 8px auto; }
+input[type=text], input[type=password] { font-size: 100%; }
+button:hover { cursor: pointer !important; }
+#log { border: 1px solid silver; height: 5em; overflow-y: scroll; resize: vertical; }

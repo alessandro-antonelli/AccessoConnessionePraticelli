@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="index.css" />
+	</head>
+
+	<body>
+		<div id="header">
+			<span style="font-size: 125%; color: royalblue; font-weight: bolder;">🛈</span> Questo programma consente di rinnovare automaticamente il login necessario per utilizzare la connessione a internet nella residenza Praticelli del DSU di Pisa.
+		</div>
+
+		<div id="contenuto">
+			<div id="sloggato" style="display: none">❓ Non sei loggato. Per usare il programma, inserisci nome utente e password:</div>
+
+			<div id="loggato" style="display: none">
+				✔️ Sei loggato come <span id="usrLab" style="font-weight: bold;">...</span>!
+				<button id="modifica">modifica credenziali</button>
+			</div>
+			<fieldset id="credenziali" style="display: none">
+				Utente:
+				<input id="usr" type="text" style="margin-bottom: 8px" />
+				
+				Password:
+				<input id="psw" type="password" />
+				
+				<button id="salva">Salva</button>
+				<div id="errori"></div>
+			</fieldset>
+
+			<label id="OnOffLab" style="color: silver; cursor: not-allowed">
+				<input id="OnOff" type="checkbox" style="zoom: 2; cursor: inherit; vertical-align: middle;" disabled />
+				<div style="margin-left: 40px; margin-top: -30px;">Attiva il rinnovo automatico del login</div>
+			</label>
+
+			<div id="log"></div>
+		</div>
+	</body>
+</html>
