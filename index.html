@@ -7,14 +7,14 @@
 
 	<body>
 		<div id="header">
-			<span style="font-size: 125%; color: royalblue; font-weight: bolder;">🛈</span> Questo programma consente di rinnovare automaticamente il login necessario per utilizzare la connessione a internet nella residenza Praticelli del DSU di Pisa.
+			<span style="font-size: 125%; color: royalblue; font-weight: bolder;">🛈 Info</span> <span id="msg-header">Questo programma consente di rinnovare automaticamente il login necessario per utilizzare la connessione a internet nella residenza Praticelli del DSU di Pisa.</span>
 		</div>
 
-		<div id="contenuto">
-			<div id="sloggato" style="display: none">❓ Non sei loggato. Per usare il programma, inserisci nome utente e password:</div>
+		<div id="account">
+			<div id="sloggato" style="display: none">❓ Non sei autenticato. Per usare il programma, inserisci le tue credenziali:</div>
 
 			<div id="loggato" style="display: none">
-				✔️ Sei loggato come <span id="usrLab" style="font-weight: bold;">...</span>
+				✔️ Sei autenticato come <span id="usrLab" style="font-weight: bold;">...</span>
 				<button id="modifica">✏️modifica credenziali</button>
 			</div>
 			<fieldset id="credenziali" style="display: none">
@@ -27,19 +27,32 @@
 				<button id="salva">Salva</button>
 				<div id="errori"></div>
 			</fieldset>
+		</div>
 
+		<div id="contenuto">
 			<label id="OnOffLab" style="display: none; cursor: pointer">
-				<input id="OnOff" type="checkbox" style="zoom: 2; cursor: inherit; vertical-align: middle;" disabled />
+				<input id="OnOff" type="checkbox" style="zoom: 2; cursor: inherit; vertical-align: middle;" />
 				<div style="margin-left: 40px; margin-top: -30px; cursor: inherit;">Attiva il rinnovo automatico del login</div>
 			</label>
+
+			<label id="StartupLab" style="display: none; cursor: pointer">
+				<input id="Startup" type="checkbox" style="zoom: 2; cursor: inherit; vertical-align: middle;" />
+				<div style="margin-left: 40px; margin-top: -30px; cursor: inherit;">Avvia automaticamente il programma all'accensione del computer <span style="font-size: 80%">(sarà avviato già ridotto nella tray delle notifiche)</span></div>
+			</label>
+
+			<button id="quit" title="Chiudi il programma">
+				<img src="off.png" style="cursor: inherit; float: left" width="32" height="32" />
+				<span style="cursor: inherit; vertical-align: -webkit-baseline-middle; margin-left: 5px">Esci</span>
+			</button>
 
 			<h4>Registro attività</h4>
 			<div id="log"></div>
 		</div>
 
 		<div id="footer">
+			Versione <span id="versione">?</span> |
 			©2021 <a href="https://alessandro-antonelli.github.io" target="_blank">Alessandro Antonelli</a> |
-			<a href="https://github.com/alessandro-antonelli/AccessoConnessionePraticelli" target="_blank">Codice sorgente su Github</a> |
+			<a href="https://github.com/alessandro-antonelli/AccessoConnessionePraticelli" target="_blank">codice sorgente su Github</a> |
 			logo: <a href="https://github.com/fabianalexisinostroza" target="_blank">Antü Plasma Suite by Fabián Alexis</a> (CC-BY-SA)
 		</div>
 	</body>

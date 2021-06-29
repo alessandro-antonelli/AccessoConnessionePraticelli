@@ -10,16 +10,21 @@
 
 
 body { font-family: sans-serif; padding: 0; margin: 0; }
-#header { font-size: 110%; background-color: skyblue; padding: 2px 8px 8px 8px; }
+#header { font-size: 110%; background-color: skyblue; padding: 2px 8px 8px 8px; text-align: center; cursor: pointer; }
+#account { font-size: 130%; background-color: #FFFFC2; border-bottom: 1px solid gold; padding: 8px; }
+#msg-header { display: none; transition: display 5s; }
 #footer { font-size: 90%; background-color: gray; color: white; padding: 8px; text-align: center; }
 #contenuto { font-size: 130%; padding: 8px }
+#quit { margin: 8px auto; }
 #credenziali { background-color: orangered; color: white; border: none; }
 #usr, #psw { font-weight: bold; width: 95%; clear: both; }
 a { text-decoration: none; color: unset; font-weight: bold; }
 a:hover { text-decoration: underline; cursor: pointer !important; }
 h4 { margin: 8px 0 4px 0; }
 input[type=checkbox] { filter:hue-rotate(140deg); }
-button { font-size: 100%; display: block; margin: 8px auto; }
-input[type=text], input[type=password] { font-size: 100%; }
+button { display: block; margin: 8px auto; }
+#salva, #quit { font-size: 100%; }
+#modifica { font-size: 80%; }
 button:hover { cursor: pointer !important; }
-#log { border: 1px solid silver; height: 5em; overflow-y: scroll; resize: vertical; }
+input[type=text], input[type=password] { font-size: 100%; }
+#log { border: 1px solid silver; height: 6em; overflow-y: scroll; resize: vertical; word-break: break-all; }

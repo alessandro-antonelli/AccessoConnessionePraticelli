@@ -1,18 +1,22 @@
 {
   "name": "accesso-connessione-praticelli",
+  "productName": "Accesso connessione Praticelli",
   "version": "1.0.0",
   "description": "Rinnova automaticamente il login per la connessione internet nella residenza Praticelli di Pisa",
   "main": "main.js",
+  "icon": "icon.ico",
   "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron-forge start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alessandro-antonelli/AccessoConnessionePraticelli.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Alessandro Antonelli",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/alessandro-antonelli/AccessoConnessionePraticelli/issues"
@@ -20,11 +24,66 @@
   "homepage": "https://github.com/alessandro-antonelli/AccessoConnessionePraticelli#readme",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.57",
+    "@electron-forge/maker-deb": "^6.0.0-beta.57",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.57",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.57",
+    "@electron-forge/maker-zip": "^6.0.0-beta.57",
     "electron": "^13.1.4"
   },
   "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.0.0",
     "ping": "^0.4.1",
     "puppeteer": "^10.0.0"
+  },
+  "build": {
+    "files": [
+      "**/*",
+      "!CaptivePortal - Universita di Pisa.html",
+      "!CaptivePortal - Universita di Pisa_files",
+      "!node_modules",
+      "!locales",
+      "!resources",
+      "!.gitignore"
+    ],
+    "icon": "icon.ico"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig":
+        {
+          "prune": true,
+          "asar": true,
+          "icon": "icon.ico",
+          "ignore": ["CaptivePortal - Universita di Pisa.html", "CaptivePortal - Universita di Pisa_files/*", "locales/*", "resources/*", ".gitignore", "README.md", ".vscode/*", "Istruzioni.txt", "LICENSE"]
+        },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "accesso_connessione_praticelli",
+            "title": "Accesso connessione Praticelli",
+            "setupIcon": "icon.ico",
+            "iconUrl": "file://icon.ico",
+            "noMsi": "true",
+            "loadingGif": "loading.gif"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
