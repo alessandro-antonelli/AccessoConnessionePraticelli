@@ -1,8 +1,0 @@
-out/
-.vscode/*
-CaptivePortal - Universita di Pisa_files/*
-CaptivePortal - Universita di Pisa.html
-.gitignore
-Istruzioni.txt
-node_modules
-launch.json
