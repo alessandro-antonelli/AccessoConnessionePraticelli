@@ -1,6 +1,6 @@
 {
-  "name": "accesso-connessione-praticelli",
-  "productName": "Accesso connessione Praticelli",
+  "name": "rinnovatore-connessione-praticelli",
+  "productName": "Rinnovatore connessione Praticelli",
   "version": "1.0.0",
   "description": "Rinnova automaticamente il login per la connessione internet nella residenza Praticelli di Pisa",
   "main": "main.js",
@@ -13,15 +13,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alessandro-antonelli/AccessoConnessionePraticelli.git"
+    "url": "git+https://github.com/alessandro-antonelli/RinnovatoreConnessionePraticelli.git"
   },
   "keywords": [],
   "author": "Alessandro Antonelli",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/alessandro-antonelli/AccessoConnessionePraticelli/issues"
+    "url": "https://github.com/alessandro-antonelli/RinnovatoreConnessionePraticelli/issues"
   },
-  "homepage": "https://github.com/alessandro-antonelli/AccessoConnessionePraticelli#readme",
+  "homepage": "https://github.com/alessandro-antonelli/RinnovatoreConnessionePraticelli#readme",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.57",
     "@electron-forge/maker-deb": "^6.0.0-beta.57",
@@ -61,8 +61,8 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "accesso_connessione_praticelli",
-            "title": "Accesso connessione Praticelli",
+            "name": "rinnovatore_connessione_praticelli",
+            "title": "Rinnovatore connessione Praticelli",
             "setupIcon": "icon.ico",
             "iconUrl": "file://icon.ico",
             "noMsi": "true",

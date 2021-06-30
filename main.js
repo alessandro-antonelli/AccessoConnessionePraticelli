@@ -32,7 +32,7 @@ app.whenReady().then(() =>
 	config.delete('log');
 
 	tray = new Tray(path.join(__dirname, 'icon_small.png'));
-	tray.setToolTip('Accesso connessione Praticelli');
+	tray.setToolTip('Rinnovatore connessione Praticelli');
 	tray.on('click', ToggleFinestraPrincipale);
 	tray.on('right-click', ToggleFinestraPrincipale);
 
@@ -65,7 +65,7 @@ function AvviaFinestraPrincipale()
 	FinestraPrincipale = new BrowserWindow(
 		{
 			show: false,
-			title: 'Accesso connessione Praticelli',
+			title: 'Rinnovatore connessione Praticelli',
 			width: 350,
 			height: 500,
 			resizable: false,
