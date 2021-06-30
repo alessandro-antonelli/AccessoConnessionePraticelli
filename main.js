@@ -1,12 +1,15 @@
-const { app, BrowserWindow, electron, Tray, dialog } = require('electron');
+const { app, BrowserWindow, Tray, dialog } = require('electron');
 const rinnovatore = require('./rinnovatore.js');
 const StoreProvider = require('electron-store');
-const config = new StoreProvider({name: 'config', encryptionKey: '9YiBu5#lHygy' });
+var config;
 const { ipcMain } = require('electron');
 const path = require('path');
+const os = require('os');
 
 var FinestraPrincipale;
 var tray;
+
+var ChiaveCifratura;
 
 if(require('electron-squirrel-startup')) return app.quit();
 
@@ -14,6 +17,17 @@ app.on('window-all-closed', e => e.preventDefault() )
 
 app.whenReady().then(() =>
 {
+	ChiaveCifratura = '';
+	const InterfacceDiRete = Object.keys(os.networkInterfaces());
+	for(var i=0; i < InterfacceDiRete.length; i++)
+	{
+		const NomeScheda = InterfacceDiRete[i];
+		const IP = os.networkInterfaces()[NomeScheda][0];
+		if(IP.internal == true) continue;
+		ChiaveCifratura += IP.mac;
+	}
+	config = new StoreProvider({name: 'config', clearInvalidConfig: true, encryptionKey: ChiaveCifratura });
+
 	if (process.platform === 'win32') app.setAppUserModelId(app.name);
 	config.delete('log');
 
@@ -23,9 +37,9 @@ app.whenReady().then(() =>
 	tray.on('right-click', ToggleFinestraPrincipale);
 
 	if(config.get('AutoStartup') != true) AvviaFinestraPrincipale();
-	if(config.get('attivo') == true && config.has('username') && config.has('password')) rinnovatore.AvviaMonitoraggio();
+	if(config.get('attivo') == true && config.has('username') && config.has('password')) rinnovatore.AvviaMonitoraggio(ChiaveCifratura);
 
-	ipcMain.on('attivato', (event, arg) => { rinnovatore.AvviaMonitoraggio(); })
+	ipcMain.on('attivato', (event, arg) => { rinnovatore.AvviaMonitoraggio(ChiaveCifratura); })
 	ipcMain.on('disattivato', (event, arg) => { rinnovatore.SpegniMonitoraggio(); })
 
 	ipcMain.on('quit', ChiudiApp.bind(null, FinestraPrincipale));
@@ -68,6 +82,7 @@ function AvviaFinestraPrincipale()
 	{
 		FinestraPrincipale.show();
 		FinestraPrincipale.webContents.send('versione', app.getVersion());
+		FinestraPrincipale.webContents.send('CifraturaConfig', ChiaveCifratura);
 	})
 
 	rinnovatore.AggiornaFinestraUI(FinestraPrincipale);

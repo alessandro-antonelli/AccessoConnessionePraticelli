@@ -7,7 +7,12 @@
 
 	<body>
 		<div id="header">
-			<span style="font-size: 125%; color: royalblue; font-weight: bolder;">🛈 Info</span> <span id="msg-header">Questo programma consente di rinnovare automaticamente il login necessario per utilizzare la connessione a internet nella residenza Praticelli del DSU di Pisa.</span>
+			<span style="color: royalblue; font-weight: bolder;">
+				<span style="font-size: 125%">🛈</span>
+				<span id="ScrittaInfo">Info</span>
+			</span>
+			<span id="msg-header">Questo programma consente di rinnovare automaticamente il login necessario per utilizzare
+				la connessione a internet nella residenza Praticelli del DSU di Pisa.</span>
 		</div>
 
 		<div id="account">
@@ -30,6 +35,8 @@
 		</div>
 
 		<div id="contenuto">
+			<div id="rinnovo" style="display: none"><b>Ultimo rinnovo del login:</b> <span id="DataRinnovo"></span></div>
+
 			<label id="OnOffLab" style="display: none; cursor: pointer">
 				<input id="OnOff" type="checkbox" style="zoom: 2; cursor: inherit; vertical-align: middle;" />
 				<div style="margin-left: 40px; margin-top: -30px; cursor: inherit;">Attiva il rinnovo automatico del login</div>
@@ -45,8 +52,10 @@
 				<span style="cursor: inherit; vertical-align: -webkit-baseline-middle; margin-left: 5px">Esci</span>
 			</button>
 
-			<h4>Registro attività</h4>
-			<div id="log"></div>
+			<div id="LogContainer" style="display: none">
+				<h4>Registro attività</h4>
+				<div id="log"></div>
+			</div>
 		</div>
 
 		<div id="footer">

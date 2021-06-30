@@ -1,30 +1,32 @@
 const puppeteer = require('puppeteer');
 const ping = require('ping');
-const StoreProvider = require('electron-store');
 const { Notification } = require('electron');
-const config = new StoreProvider({name: 'config', encryptionKey: '9YiBu5#lHygy' });
+const StoreProvider = require('electron-store');
+var config;
 
 var RinnovatoreAttivo = false;
 var TimerCountdown;
 var TimerPing;
 var FinestraUI;
 var ConnessioneFunzionavaAllUltimoControllo;
+var UltimoControllo = 0;
 
 const DominiTestati = ['131.114.101.102', 'google.com', 'amazon.com', 'microsoft.com', 'facebook.com', 'en.wikipedia.org', 'repubblica.it', 'corriere.it']
 var DominiEsito = [];
 
-exports.AvviaMonitoraggio = function()
+exports.AvviaMonitoraggio = function(ChiaveCifratura)
 {
 	if(RinnovatoreAttivo == false)
 	{
+		if(config == null) config = new StoreProvider({name: 'config', clearInvalidConfig: true, encryptionKey: ChiaveCifratura });
 		RinnovatoreAttivo = true;
 		RegistraEvento('💡 Rinnovo automatico attivato', '', false);
 
+		ImpostaProssimoControllo();
+
 		if(TimerCountdown != null) clearInterval(TimerCountdown);
 		TimerCountdown = setInterval(ImpostaProssimoControllo, 10000);
-
-		ImpostaProssimoControllo();
-		IniziaControlloConnessione();
+		
 	}
 }
 
@@ -48,25 +50,35 @@ function ImpostaProssimoControllo()
 {
 	const UltimoRinnovo = config.get('UltimoRinnovo');
 	var TempoDaAspettareMs;
-	if(UltimoRinnovo == null || isNaN(UltimoRinnovo) ) TempoDaAspettareMs = 30000;
+	const adesso = (new Date()).getTime();
+	const TempoPassatoDaUltimoControllo = (UltimoControllo != null ? adesso - UltimoControllo : MAX_SAFE_INTEGER);
+
+	if(UltimoRinnovo == null || isNaN(UltimoRinnovo) )
+	{
+		TempoDaAspettareMs = 30000 - TempoPassatoDaUltimoControllo;
+		if(FinestraUI != null && !FinestraUI.isDestroyed() ) FinestraUI.webContents.send('DataRinnovo', '?');
+	}
 	else {
 		const DurataLoginMs = 28800000; //8 ore
 		const ProxRinnovo = Number(UltimoRinnovo) + DurataLoginMs;
-		const adesso = (new Date()).getTime();
 		TempoDaAspettareMs = ProxRinnovo - adesso;
 
-		//Ogni 5 minuti controlla lo stato della connessione (anche se non è ancora arrivato il momento del rinnovo)
-		if(adesso % 300000 == 0) IniziaControlloConnessione();
-		/*
-		const MinutiMancanti = (ProxRinnovo - adesso) / 60000;
+		if(FinestraUI != null && !FinestraUI.isDestroyed() )
+		{
+			const TestoRinnovo = FormattaTimestampComeData(UltimoRinnovo) + ', scade il ' + FormattaTimestampComeData(ProxRinnovo);
+			FinestraUI.webContents.send('DataRinnovo', TestoRinnovo);
+		}
 
-		if(MinutiMancanti < 0) FrequenzaControlliMs = 5000; // Già scaduto => Monitoraggio ogni 5 secondi
-		else if(MinutiMancanti < 1) FrequenzaControlliMs = 1000; // Manca meno di 1 minuto alla scadenza => Monitoraggio ogni secondo
-		else if(MinutiMancanti < 5) FrequenzaControlliMs = 30000; // Mancano <5min => 30 secondi
-		else if(MinutiMancanti < 10) FrequenzaControlliMs = 60000; // Mancano <10 min => 1 min
-		else if(MinutiMancanti < 60) FrequenzaControlliMs = 300000; // Manca <1h => 5 min
-		else FrequenzaControlliMs = 900000; //15 min
-		*/
+		if(TempoDaAspettareMs < 0 && ConnessioneFunzionavaAllUltimoControllo == true)
+		{
+			config.delete('UltimoRinnovo');
+			TempoDaAspettareMs = 30000 - TempoPassatoDaUltimoControllo;
+		}
+		else
+		{
+			//Ogni 5 minuti controlla lo stato della connessione (anche se non è ancora arrivato il momento del rinnovo)
+			if(TempoPassatoDaUltimoControllo > 300000) IniziaControlloConnessione();
+		}
 	}
 
 	if(TimerPing != null) clearTimeout(TimerPing);
@@ -80,6 +92,7 @@ function IniziaControlloConnessione()
 
 async function ConcludiControlloConnessione(PortaleRinnovoFunziona, ConnessioneFunziona)
 {
+	UltimoControllo = (new Date()).getTime();
 	ConnessioneFunzionavaAllUltimoControllo = ConnessioneFunziona;
 	
 	if(ConnessioneFunziona == false && PortaleRinnovoFunziona == false)
@@ -115,8 +128,6 @@ async function ConcludiControlloConnessione(PortaleRinnovoFunziona, ConnessioneF
 	{
 		RegistraEvento('🆗 Connessione funzionante', '', false);
 	}
-
-	ImpostaProssimoControllo(); // Imposta il prossimo controllo
 }
 
 function EseguiPing(IndiceDaTestare)
@@ -163,7 +174,6 @@ async function RinnovaLogin()
 	} catch(e) { browser.close(); return 'apertura browser/pagina: ' + e.message; }
 
 	const url = 'http://131.114.101.102/login.php';
-	//const url = 'file:///D:/Alessandro%20Antonelli/Programmi/AccessoConnessionePraticelli/CaptivePortal%20-%20Universita%20di%20Pisa.html'; TODO
 
 	try {
 		await page.goto(url, { waitUntil: 'load' });
@@ -232,12 +242,10 @@ function sleep(ms)
 function RegistraEvento(testo, dettagli, InviaNotifica)
 {
 	const adesso = new Date();
-	const DataOra = '<span style="opacity: 0.7; font-size: 80%">' + adesso.getDate() + '/' + (adesso.getMonth()+1) + ' ' +
-					adesso.getHours() + (adesso.getMinutes() < 10 ? ':0' : ':') + adesso.getMinutes() +
-					(adesso.getSeconds() < 10 ? ':0' : ':') + adesso.getSeconds() + '</span> ';
-	const TestoHTML = DataOra + testo + ' <span style="font-size: 80%; opacity: 0.9;">' + dettagli + '</span>';
+	const DataOra = '<span style="opacity: 0.7; font-size: 80%">' + FormattaTimestampComeData(adesso.getTime() ) + '</span> ';
+	const TestoHTML = DataOra + testo + (dettagli == '' ? '' : ' <span style="font-size: 80%; opacity: 0.9;">' + dettagli + '</span>');
 
-	if(FinestraUI != null && !FinestraUI.isDestroyed() )
+	if(FinestraUI != null && !FinestraUI.isDestroyed() && FinestraUI.isVisible() )
 	    { FinestraUI.webContents.send('log', TestoHTML); }
 
 	var NuovoLog;
@@ -250,4 +258,12 @@ function RegistraEvento(testo, dettagli, InviaNotifica)
 	{
 		new Notification({ title: testo, body: dettagli, icon: 'icon.png' }).show();
 	}
+}
+
+function FormattaTimestampComeData(timestamp)
+{
+	var data = new Date(timestamp);
+	return data.getDate() + '/' + (data.getMonth()+1) + ' ' +
+		data.getHours() + (data.getMinutes() < 10 ? ':0' : ':') + data.getMinutes() +
+		(data.getSeconds() < 10 ? ':0' : ':') + data.getSeconds()
 }
