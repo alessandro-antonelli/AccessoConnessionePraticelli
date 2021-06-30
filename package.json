@@ -55,7 +55,7 @@
           "prune": true,
           "asar": true,
           "icon": "icon.ico",
-          "ignore": ["CaptivePortal - Universita di Pisa.html", "CaptivePortal - Universita di Pisa_files/*", "locales/*", "resources/*", ".gitignore", "README.md", ".vscode/*", "Istruzioni.txt", "LICENSE"]
+          "ignore": ["CaptivePortal - Universita di Pisa.html", "CaptivePortal - Universita di Pisa_files/*", "locales/*", "resources/*", ".gitignore", "README.md", ".vscode/*", "out/*", "Istruzioni.txt", "LICENSE", "launch.json"]
         },
       "makers": [
         {
