@@ -137,7 +137,7 @@ function EseguiPing(IndiceDaTestare)
 		{
 			DominiEsito[IndiceDaTestare] = isAlive;
 			DecidiSeProseguirePing(IndiceDaTestare);
-		});
+		}, { timeout: 2 } );
 }
 
 function DecidiSeProseguirePing(UltimoTestEseguito)
@@ -159,6 +159,7 @@ async function RinnovaLogin()
 {
 	if(!config.has('username') || !config.has('password')) return 'credenziali non presenti in memoria';
 	
+	// Avvio chromium
 	var browser, page;
 	
 	try {
@@ -174,52 +175,73 @@ async function RinnovaLogin()
 		page = (await browser.pages())[0];
 	} catch(e) { browser.close(); return 'apertura browser/pagina: ' + e.message; }
 
-	const url = 'http://131.114.101.102/login.php';
-
+	// Carico una pagina qualunque
+	const TimestampInizio = (new Date()).getTime();
 	try {
-		await page.goto(url, { waitUntil: 'load' });
-	} catch(e) { browser.close(); return 'caricamento portale: ' + e.message; }
+		page.goto('http://www.google.com', { timeout: 0 });
+	} catch(e) { browser.close(); return 'caricamento google: ' + e.message; }
+
+	// Attendo redirect al portale di login
+	const UrlLogin = 'http://131.114.101.102/login.php';
+	while(true)
+	{
+		const adesso = (new Date()).getTime();
+		if(adesso - TimestampInizio > 15000) { browser.close(); return 'redirect da google al portale non riuscito dopo 15 secondi'; }
+
+		if(page.url() == UrlLogin) break;
+		sleep(500);
+	}
 
 	// Inserisco nome utente
 	try
 	{
-		await page.waitForSelector('#frmValidator > div > div > div:nth-child(1) > input');
-		await page.type('input[type="text"]', config.get('username'));
+		await page.$("#frmValidator > div > div > div:nth-child(1) > input"); //oppure: input[type="text"]
+		await page.type('#frmValidator > div > div > div:nth-child(1) > input', config.get('username'));
 	} catch(e) { browser.close(); return 'inserimento username: ' + e.message; }
 
 	// Inserisco password
 	try
 	{
-		await page.waitForSelector('#frmValidator > div > div > div:nth-child(3) > input');
-		await page.type('input[type="password"]', config.get('password'));
+		await page.$("#frmValidator > div > div > div:nth-child(3) > input"); //oppure: input[type="password"]
+		await page.type('#frmValidator > div > div > div:nth-child(3) > input', config.get('password'));
 	} catch(e) { browser.close(); return 'inserimento password: ' + e.message; }
-
-	await page.screenshot({path: 'pre-click ' + (new Date()).getTime() + '.png'}); //TODO
 
 	const TimestampClick = (new Date()).getTime();
 	try
 	{
-		await page.waitForSelector('#frmValidator > div > div > button');
-		await page.click('button[type="submit"]');
+		await page.$("#frmValidator > div > div > button"); //oppure: button[type="submit"]
+		await page.click('#frmValidator > div > div > button');
 	} catch(e) { browser.close(); return 'click pulsante accedi: ' + e.message; }
 
+	const TestoSuccesso = 'Buona navigazione. <br>Da questo momento potrai navigare liberamente.';
 	while(true)
 	{
-		if(page.url == (url + '?indexpage=session') )
+		// Controllo se il login è riuscito
+		var MessaggioSuccesso = '';
+		const ElemSuccesso = await page.$("#timeval");
+		if(ElemSuccesso != null)
+		{
+			try {
+				MessaggioSuccesso = await (await ElemSuccesso.getProperty('innerHTML')).jsonValue();
+			} catch(e) { browser.close(); return 'lettura messaggio successo: ' + e.message; }
+		}
+
+		if(page.url() == (UrlLogin + '?indexpage=session') || MessaggioSuccesso == TestoSuccesso)
 		{
 			try { await browser.close(); } catch(e) { return 'chiusura browser: ' + e.message; }
 			config.set('UltimoRinnovo', (new Date()).getTime() );
 			return 'OK';
 		}
 		
+		// Controllo se il login è fallito
 		var MessaggioErrore;
-		const ElemErrore = await this.page.$("#message");
+		const ElemErrore = await page.$("#message");
 		if(ElemErrore != null)
 		{
 			try
 			{
 				MessaggioErrore = await (await ElemErrore.getProperty('innerHTML')).jsonValue();
-				if(MessaggioErrore != '')
+				if(MessaggioErrore != '' && MessaggioErrore != '&nbsp' && MessaggioErrore != '&nbsp;')
 				{
 					browser.close();
 					return 'login non riuscito: ' + MessaggioErrore;
@@ -227,7 +249,6 @@ async function RinnovaLogin()
 			} catch(e) { browser.close(); return 'lettura messaggio errore: ' + e.message; }
 		}
 		
-		await page.screenshot({path: 'post-click ' + (new Date()).getTime() + '.png'}); //TODO
 		await sleep(500);
 
 		const TimestampAttuale = (new Date()).getTime();
