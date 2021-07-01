@@ -65,7 +65,7 @@
             "name": "rinnovatore_connessione_praticelli",
             "title": "Rinnovatore connessione Praticelli",
             "setupIcon": "img/icon.ico",
-            "iconUrl": "https://raw.githubusercontent.com/alessandro-antonelli/RinnovatoreConnessionePraticelli/main/icon.ico",
+            "iconUrl": "https://raw.githubusercontent.com/alessandro-antonelli/RinnovatoreConnessionePraticelli/main/img/icon.ico",
             "msi": "true",
             "loadingGif": "img/loading.gif"
           }
