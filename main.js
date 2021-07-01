@@ -31,7 +31,7 @@ app.whenReady().then(() =>
 	if (process.platform === 'win32') app.setAppUserModelId(app.name);
 	config.delete('log');
 
-	tray = new Tray(path.join(__dirname, 'icon_small.png'));
+	tray = new Tray(path.join(__dirname, 'img', 'icon_small.png'));
 	tray.setToolTip('Rinnovatore connessione Praticelli');
 	tray.on('click', ToggleFinestraPrincipale);
 	tray.on('right-click', ToggleFinestraPrincipale);
@@ -75,7 +75,7 @@ function AvviaFinestraPrincipale()
 			}
 		})
 	FinestraPrincipale.setMenuBarVisibility(false);
-	FinestraPrincipale.setIcon(path.join(__dirname, 'icon_small.png'));
+	FinestraPrincipale.setIcon(path.join(__dirname, 'img', 'icon_small.png'));
 	FinestraPrincipale.loadFile('index.html');
 
 	FinestraPrincipale.webContents.on('did-finish-load', function()

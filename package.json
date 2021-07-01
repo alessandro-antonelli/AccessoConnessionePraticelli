@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Rinnova automaticamente il login per la connessione internet nella residenza Praticelli di Pisa",
   "main": "main.js",
-  "icon": "icon.ico",
+  "icon": "img/icon.ico",
   "scripts": {
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -39,14 +39,15 @@
   "build": {
     "files": [
       "**/*",
-      "!CaptivePortal - Universita di Pisa.html",
-      "!CaptivePortal - Universita di Pisa_files",
-      "!node_modules",
-      "!locales",
-      "!resources",
-      "!.gitignore"
+      "!.git/*",
+      "!APPUNTI/*",
+      "!.vscode/*",
+      "!.gitignore",
+      "!LICENSE",
+      "!README.md",
+      "!launch.json"
     ],
-    "icon": "icon.ico"
+    "icon": "img/icon.ico"
   },
   "config": {
     "forge": {
@@ -54,8 +55,8 @@
         {
           "prune": true,
           "asar": true,
-          "icon": "icon.ico",
-          "ignore": ["CaptivePortal - Universita di Pisa.html", "CaptivePortal - Universita di Pisa_files/*", "locales/*", "resources/*", ".gitignore", "README.md", ".vscode/*", "out/*", "Istruzioni.txt", "LICENSE", "launch.json"]
+          "icon": "img/icon.ico",
+          "ignore": [".git/*", "APPUNTI/*", ".vscode/*", ".gitignore", "README.md", "LICENSE", "launch.json"]
         },
       "makers": [
         {
@@ -63,10 +64,10 @@
           "config": {
             "name": "rinnovatore_connessione_praticelli",
             "title": "Rinnovatore connessione Praticelli",
-            "setupIcon": "icon.ico",
-            "iconUrl": "file://icon.ico",
-            "noMsi": "true",
-            "loadingGif": "loading.gif"
+            "setupIcon": "img/icon.ico",
+            "iconUrl": "https://raw.githubusercontent.com/alessandro-antonelli/RinnovatoreConnessionePraticelli/main/icon.ico",
+            "msi": "true",
+            "loadingGif": "img/loading.gif"
           }
         },
         {

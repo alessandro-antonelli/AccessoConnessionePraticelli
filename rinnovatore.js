@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const ping = require('ping');
 const { Notification } = require('electron');
+const path = require('path');
 const StoreProvider = require('electron-store');
 var config;
 
@@ -256,7 +257,7 @@ function RegistraEvento(testo, dettagli, InviaNotifica)
 
 	if(InviaNotifica)
 	{
-		new Notification({ title: testo, body: dettagli, icon: 'icon.png' }).show();
+		new Notification({ title: testo, body: dettagli, icon: path.join(__dirname, 'img', 'icon.png') }).show();
 	}
 }
 
