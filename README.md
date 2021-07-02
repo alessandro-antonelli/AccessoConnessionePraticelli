@@ -7,7 +7,7 @@ Scaricare l'installer:
 * Mac
 * Linux
 
-## Istruzioni per compilare i sorgenti (su Linux)
+## Istruzioni per compilare i sorgenti (sistemi Linux)
 Installare npm (saltare se è già installato nel sistema):
 `sudo apt install npm`
 
@@ -24,8 +24,14 @@ Scaricare i sorgenti ed compilarli:
 git clone https://github.com/alessandro-antonelli/RinnovatoreConnessionePraticelli
 cd RinnovatoreConnessionePraticelli
 npm install --save-dev @electron-forge/cli
-npm start       #per eseguire il programma
-npm run make    #per creare la build
+
+#per eseguire il programma
+npm start
+
+#per creare la build
+npm update
+sudo apt-get install rpm
+npm run make
 ```
 
 Nel caso non dovesse farlo da solo, installare manualmente le dipendenze:
