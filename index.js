@@ -1,3 +1,4 @@
+const process = require('process');
 const ipcRenderer = require('electron').ipcRenderer;
 const StoreProvider = require('electron-store');
 var config;
@@ -38,11 +39,15 @@ function CaricaConfigurazione()
 		document.getElementById('loggato').style.display = 'block';
 		document.getElementById('credenziali').style.display = 'none';
 		document.getElementById('OnOffLab').style.display = 'block';
-		document.getElementById('StartupLab').style.display = 'block';
 		document.getElementById('rinnovo').style.display = 'block';
 		document.getElementById('LogContainer').style.display = 'block';
 		if(config.has('attivo')) ToggleAttivazione(config.get('attivo'));
-		if(config.has('AutoStartup')) document.getElementById('Startup').checked = config.get('AutoStartup');
+
+		if (process.platform === 'linux') document.getElementById('StartupLab').style.display = 'none';
+		else {	
+			document.getElementById('StartupLab').style.display = 'block';
+			if(config.has('AutoStartup')) document.getElementById('Startup').checked = config.get('AutoStartup');
+		}
 	}
 	else
 	{
@@ -93,11 +98,15 @@ async function SalvaCredenziali()
 		document.getElementById('loggato').style.display = 'block';
 		document.getElementById('credenziali').style.display = 'none';
 		document.getElementById('OnOffLab').style.display = 'block';
-		document.getElementById('StartupLab').style.display = 'block';
 		document.getElementById('rinnovo').style.display = 'block';
 		document.getElementById('LogContainer').style.display = 'block';
 		if(config.has('attivo')) { document.getElementById('OnOff').checked = config.get('attivo'); ToggleAttivazione(false); }
-		if(config.has('AutoStartup')) document.getElementById('Startup').checked = config.get('AutoStartup');
+
+		if (process.platform === 'linux') document.getElementById('StartupLab').style.display = 'none';
+		else {
+			document.getElementById('StartupLab').style.display = 'block';
+			if(config.has('AutoStartup')) document.getElementById('Startup').checked = config.get('AutoStartup');
+		}
 	} else
 	{
 		document.getElementById('errori').innerHTML = '⚠️ Devi inserire un nome utente e una password!';

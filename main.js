@@ -5,6 +5,7 @@ var config;
 const { ipcMain } = require('electron');
 const path = require('path');
 const os = require('os');
+const process = require('process');
 
 var FinestraPrincipale;
 var tray;

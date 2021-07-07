@@ -11,6 +11,7 @@ var TimerPing;
 var FinestraUI;
 var ConnessioneFunzionavaAllUltimoControllo;
 var UltimoControllo = 0;
+var ControlloConnessioneInCorso = false;
 
 const DominiTestati = ['131.114.101.102', 'google.com', 'amazon.com', 'microsoft.com', 'facebook.com', 'en.wikipedia.org', 'repubblica.it', 'corriere.it']
 var DominiEsito = [];
@@ -27,7 +28,8 @@ exports.AvviaMonitoraggio = function(ChiaveCifratura)
 
 		if(TimerCountdown != null) clearInterval(TimerCountdown);
 		TimerCountdown = setInterval(ImpostaProssimoControllo, 10000);
-		
+
+		IniziaControlloConnessione();
 	}
 }
 
@@ -88,7 +90,11 @@ function ImpostaProssimoControllo()
 
 function IniziaControlloConnessione()
 {
-	EseguiPing(0);
+	if(ControlloConnessioneInCorso == false)
+	{
+		ControlloConnessioneInCorso = true;
+		EseguiPing(0);
+	}
 }
 
 async function ConcludiControlloConnessione(PortaleRinnovoFunziona, ConnessioneFunziona)
@@ -129,6 +135,7 @@ async function ConcludiControlloConnessione(PortaleRinnovoFunziona, ConnessioneF
 	{
 		RegistraEvento('🆗 Connessione funzionante', '', false);
 	}
+	ControlloConnessioneInCorso = false;
 }
 
 function EseguiPing(IndiceDaTestare)
@@ -181,16 +188,20 @@ async function RinnovaLogin()
 		page.goto('http://www.google.com', { timeout: 0 });
 	} catch(e) { browser.close(); return 'caricamento google: ' + e.message; }
 
+	//DEBUG await page.screenshot({path: (new Date()).getTime() + ' google.png'});
+
 	// Attendo redirect al portale di login
 	const UrlLogin = 'http://131.114.101.102/login.php';
 	while(true)
 	{
 		const adesso = (new Date()).getTime();
+		//DEBUG await page.screenshot({path: (new Date()).getTime() + ' attesa caricamento.png'});
 		if(adesso - TimestampInizio > 15000) { browser.close(); return 'redirect da google al portale non riuscito dopo 15 secondi'; }
 
 		if(page.url() == UrlLogin) break;
 		sleep(500);
 	}
+	//DEBUG await page.screenshot({path: (new Date()).getTime() + ' caricata.png'});
 
 	// Inserisco nome utente
 	try
@@ -205,6 +216,7 @@ async function RinnovaLogin()
 		await page.$("#frmValidator > div > div > div:nth-child(3) > input"); //oppure: input[type="password"]
 		await page.type('#frmValidator > div > div > div:nth-child(3) > input', config.get('password'));
 	} catch(e) { browser.close(); return 'inserimento password: ' + e.message; }
+	//DEBUG await page.screenshot({path: (new Date()).getTime() + ' compilata.png'});
 
 	const TimestampClick = (new Date()).getTime();
 	try
@@ -216,6 +228,7 @@ async function RinnovaLogin()
 	const TestoSuccesso = 'Buona navigazione. <br>Da questo momento potrai navigare liberamente.';
 	while(true)
 	{
+		//DEBUG await page.screenshot({path: (new Date()).getTime() + ' post click.png'});
 		// Controllo se il login è riuscito
 		var MessaggioSuccesso = '';
 		const ElemSuccesso = await page.$("#timeval");
@@ -284,8 +297,9 @@ function RegistraEvento(testo, dettagli, InviaNotifica)
 
 function FormattaTimestampComeData(timestamp)
 {
+	const NomeMese = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
 	var data = new Date(timestamp);
-	return data.getDate() + '/' + (data.getMonth()+1) + ' ' +
+	return data.getDate() + ' ' + NomeMese[data.getMonth()] + ' ' +
 		data.getHours() + (data.getMinutes() < 10 ? ':0' : ':') + data.getMinutes() +
 		(data.getSeconds() < 10 ? ':0' : ':') + data.getSeconds()
 }
