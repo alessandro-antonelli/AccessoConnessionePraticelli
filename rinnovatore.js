@@ -185,23 +185,19 @@ async function RinnovaLogin()
 	// Carico una pagina qualunque
 	const TimestampInizio = (new Date()).getTime();
 	try {
-		page.goto('http://www.google.com', { timeout: 0 });
+		await page.goto('http://www.google.com', { timeout: 15000, waitUntil: "networkidle0" });
 	} catch(e) { browser.close(); return 'caricamento google: ' + e.message; }
-
-	//DEBUG await page.screenshot({path: (new Date()).getTime() + ' google.png'});
 
 	// Attendo redirect al portale di login
 	const UrlLogin = 'http://131.114.101.102/login.php';
 	while(true)
 	{
-		const adesso = (new Date()).getTime();
-		//DEBUG await page.screenshot({path: (new Date()).getTime() + ' attesa caricamento.png'});
-		if(adesso - TimestampInizio > 15000) { browser.close(); return 'redirect da google al portale non riuscito dopo 15 secondi'; }
-
 		if(page.url() == UrlLogin) break;
 		sleep(500);
+
+		const adesso = (new Date()).getTime();
+		if(adesso - TimestampInizio > 15000) { browser.close(); return 'redirect da google al portale fallito'; }
 	}
-	//DEBUG await page.screenshot({path: (new Date()).getTime() + ' caricata.png'});
 
 	// Inserisco nome utente
 	try
@@ -216,7 +212,6 @@ async function RinnovaLogin()
 		await page.$("#frmValidator > div > div > div:nth-child(3) > input"); //oppure: input[type="password"]
 		await page.type('#frmValidator > div > div > div:nth-child(3) > input', config.get('password'));
 	} catch(e) { browser.close(); return 'inserimento password: ' + e.message; }
-	//DEBUG await page.screenshot({path: (new Date()).getTime() + ' compilata.png'});
 
 	const TimestampClick = (new Date()).getTime();
 	try
@@ -228,7 +223,6 @@ async function RinnovaLogin()
 	const TestoSuccesso = 'Buona navigazione. <br>Da questo momento potrai navigare liberamente.';
 	while(true)
 	{
-		//DEBUG await page.screenshot({path: (new Date()).getTime() + ' post click.png'});
 		// Controllo se il login è riuscito
 		var MessaggioSuccesso = '';
 		const ElemSuccesso = await page.$("#timeval");
@@ -256,8 +250,10 @@ async function RinnovaLogin()
 				MessaggioErrore = await (await ElemErrore.getProperty('innerHTML')).jsonValue();
 				if(MessaggioErrore != '' && MessaggioErrore != '&nbsp' && MessaggioErrore != '&nbsp;')
 				{
+					MessaggioErrore = MessaggioErrore.replace('<div class="alert alert-danger" role="alert">', '');
+					MessaggioErrore = MessaggioErrore.replace('</div>', '');
 					browser.close();
-					return 'login non riuscito: ' + MessaggioErrore;
+					return 'login fallito: ' + MessaggioErrore;
 				}
 			} catch(e) { browser.close(); return 'lettura messaggio errore: ' + e.message; }
 		}
